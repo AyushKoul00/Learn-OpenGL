@@ -1,15 +1,11 @@
 # Learn-OpenGL
 
-Steps:
+Clone with `git clone --recurse-submodules -j8 url`
 
-DONT CLONE THE REPO - DOWNLOAD THE ZIP
+This project uses [the premake website](https://premake.github.io).
 
+Windows project files can be built with `premake5 vs2019`
 
-run "gitInit.bat" on cmd
+Make files can be made with `premake5 gmake2`
 
-run "build.bat vs2019" on cmd
-
-open solution file
-
-build solution in Visual Studio
-
+To erase project files use `premake5 clean`

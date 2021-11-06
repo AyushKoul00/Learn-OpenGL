@@ -8,29 +8,26 @@ workspace "LearnOpenGL"
 		"MultiProcessorCompile"
 	}
 -- This is a helper variable, to concatenate the sys-arch
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-
--- outputbindir = "bin/%{prj.name}/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
--- outputobjdir = "bin-int/%{prj.name}/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
+outputbindir = "bin/%{prj.name}/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
+outputobjdir = "bin-int/%{prj.name}/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}"
 
 newaction {
-    trigger = "clean",
-    description = "Remove all binaries and intermediate binaries, and vs files.",
-    execute = function()
-        print("Removing binaries")
-        os.rmdir("./bin")
-        print("Removing intermediate binaries")
-        os.rmdir("./bin-int")
-        print("Removing project files")
-        os.rmdir("./.vs")
-        os.remove("**.sln")
-        os.remove("**.vcxproj")
-        os.remove("**.vcxproj.filters")
-        os.remove("**.vcxproj.user")
-        print("Done")
-    end
+	trigger = "clean",
+	description = "Remove all binaries and intermediate binaries, and vs files.",
+	execute = function()
+		print("Removing binaries")
+		os.rmdir("./bin")
+		print("Removing intermediate binaries")
+		os.rmdir("./bin-int")
+		print("Removing project files")
+		os.rmdir("./.vs")
+		os.remove("**.sln")
+		os.remove("**.vcxproj")
+		os.remove("**.vcxproj.filters")
+		os.remove("**.vcxproj.user")
+		print("Done")
+	end
 }
-
 
 project "Tutorial"
 	location "Tutorial"
@@ -38,10 +35,9 @@ project "Tutorial"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
-	-- systemversion "latest"
 
-	targetdir("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
-    objdir("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir (outputbindir)
+	objdir (outputobjdir)
 
 	files
 	{
@@ -66,18 +62,16 @@ project "Tutorial"
 
 	links
 	{
-		"GLFW",
+		"glfw",
 		"Glad",
-		"ImGui",
-		"opengl32.lib"
+		"ImGui"
 	}
 
 	filter "system:windows"
 		defines "SPDLOG_WCHAR_TO_UTF8_SUPPORT"
-        -- buildoptions { "-lgdi32" }
         systemversion "latest"
-		defines  {
-            "_GLFW_WIN32",
+		defines 
+		{
             "_CRT_SECURE_NO_WARNINGS",
 			"GLFW_INCLUDE_NONE"
         }
@@ -92,48 +86,15 @@ project "Tutorial"
 		}
 
 	filter "configurations:Debug"
-		-- buildoptions "/MTd"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		-- buildoptions "/MT"
 		runtime "Release"
 		optimize "on"
 
 
 group "Dependencies"
-
--- project "Glad"
--- 	location "vendor/glad"
--- 	kind "StaticLib"
--- 	language "C"
--- 	staticruntime "on"
--- 	systemversion "latest"
-
--- 	targetdir("bin/" .. outputdir .. "/%{prj.name}")
---     objdir("bin-int/" .. outputdir .. "/%{prj.name}")
-
--- 	files
--- 	{
--- 		"%{prj.location}/src/glad.c",
--- 		"%{prj.location}/include/**.h",
--- 	}
-
--- 	includedirs
--- 	{
--- 		"%{prj.location}/include"
--- 	}
-
--- 	filter "configurations:Debug"
--- 		runtime "Debug"
--- 		symbols "on"
-
--- 	filter "configurations:Release"
--- 		runtime "Release"
--- 		optimize "on"
-
-
 
 project "Glad"
 	location "vendor/glad"
@@ -141,8 +102,8 @@ project "Glad"
 	language "C"
 	staticruntime "on"
 	
-	targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir (outputbindir)
+	objdir (outputobjdir)
 
 	files
 	{
@@ -167,109 +128,109 @@ project "Glad"
 		runtime "Release"
 		optimize "on"
 
--- project "GLFW"
--- 	location "vendor/glfw"
--- 	kind "StaticLib"
--- 	language "C"
--- 	staticruntime "on"
--- 	systemversion "latest"
+project "glfw"
+	location "vendor/glfw"
+	kind "StaticLib"
+	language "C"
+	staticruntime "on"
 
--- 	targetdir("bin/" .. outputdir .. "/%{prj.name}")
---     objdir("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir (outputbindir)
+	objdir (outputobjdir)
 
--- 	files
--- 	{
--- 		"%{prj.location}/src/context.c",
--- 		"%{prj.location}/src/egl_context.c",
--- 		"%{prj.location}/src/egl_context.h",
--- 		"%{prj.location}/src/init.c",
--- 		"%{prj.location}/src/input.c",
--- 		"%{prj.location}/src/internal.h",
--- 		"%{prj.location}/src/monitor.c",
--- 		"%{prj.location}/src/osmesa_context.c",
--- 		"%{prj.location}/src/osmesa_context.h",
--- 		"%{prj.location}/src/vulkan.c",
--- 		"%{prj.location}/src/window.c",
-		
+	files
+	{
+		"%{prj.location}/src/context.c",
+		"%{prj.location}/src/egl_context.c",
+		"%{prj.location}/src/egl_context.h",
+		"%{prj.location}/src/init.c",
+		"%{prj.location}/src/input.c",
+		"%{prj.location}/src/internal.h",
+		"%{prj.location}/src/monitor.c",
+		"%{prj.location}/src/osmesa_context.c",
+		"%{prj.location}/src/osmesa_context.h",
+		"%{prj.location}/src/vulkan.c",
+		"%{prj.location}/src/window.c"
+	}
 
--- 		"%{prj.location}/src/glfw_config.h",
--- 		"%{prj.location}/include/GLFW/glfw3.h",
--- 		"%{prj.location}/include/GLFW/glfw3native.h"
--- 	}
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "On"
+		optimize "Debug"
 
--- 	filter "configurations:Debug"
--- 		runtime "Debug"
--- 		symbols "on"
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "Speed"
 
--- 	filter "configurations:Release"
--- 		runtime "Release"
--- 		optimize "on"
+	filter "configurations:Dist"
+		runtime "Release"
+		optimize "Speed"
 
--- 	filter "system:windows"
--- 		files
--- 		{
--- 			"%{prj.location}/src/wgl_context.c",
--- 			"%{prj.location}/src/wgl_context.h",
--- 			"%{prj.location}/src/win32_init.c",
--- 			"%{prj.location}/src/win32_joystick.c",
--- 			"%{prj.location}/src/win32_joystick.h",
--- 			"%{prj.location}/src/win32_monitor.c",
--- 			"%{prj.location}/src/win32_platform.h",
--- 			"%{prj.location}/src/win32_thread.c",
--- 			"%{prj.location}/src/win32_time.c",
--- 			"%{prj.location}/src/win32_window.c"
--- 		}
+	filter "system:windows"
+		files
+		{
+			"%{prj.location}/src/wgl_context.c",
+			"%{prj.location}/src/wgl_context.h",
+			"%{prj.location}/src/win32_init.c",
+			"%{prj.location}/src/win32_joystick.c",
+			"%{prj.location}/src/win32_joystick.h",
+			"%{prj.location}/src/win32_monitor.c",
+			"%{prj.location}/src/win32_platform.h",
+			"%{prj.location}/src/win32_thread.c",
+			"%{prj.location}/src/win32_time.c",
+			"%{prj.location}/src/win32_window.c"
+		}
+		systemversion "latest"
 
--- 		defines 
--- 		{ 
--- 			"_GLFW_WIN32",
--- 			"_CRT_SECURE_NO_WARNINGS"
--- 		}
+		defines 
+		{ 
+			"_GLFW_WIN32",
+			"_CRT_SECURE_NO_WARNINGS"
+		}
 	
--- 	filter "system:linux"
--- 		files
--- 		{
--- 			"%{prj.location}/src/glx_context.c",
--- 			"%{prj.location}/src/glx_context.h",
--- 			"%{prj.location}/src/linux_joystick.c",
--- 			"%{prj.location}/src/linux_joystick.h",
--- 			"%{prj.location}/src/posix_time.c",
--- 			"%{prj.location}/src/posix_time.h",
--- 			"%{prj.location}/src/posix_thread.c",
--- 			"%{prj.location}/src/posix_thread.h",
--- 			"%{prj.location}/src/x11_init.c",
--- 			"%{prj.location}/src/x11_monitor.c",
--- 			"%{prj.location}/src/x11_platform.h",
--- 			"%{prj.location}/src/x11_window.c",
--- 			"%{prj.location}/src/xkb_unicode.c",
--- 			"%{prj.location}/src/xkb_unicode.h"
--- 		}
+	filter "system:linux"
+		files
+		{
+			"%{prj.location}/src/glx_context.c",
+			"%{prj.location}/src/glx_context.h",
+			"%{prj.location}/src/linux_joystick.c",
+			"%{prj.location}/src/linux_joystick.h",
+			"%{prj.location}/src/posix_time.c",
+			"%{prj.location}/src/posix_time.h",
+			"%{prj.location}/src/posix_thread.c",
+			"%{prj.location}/src/posix_thread.h",
+			"%{prj.location}/src/x11_init.c",
+			"%{prj.location}/src/x11_monitor.c",
+			"%{prj.location}/src/x11_platform.h",
+			"%{prj.location}/src/x11_window.c",
+			"%{prj.location}/src/xkb_unicode.c",
+			"%{prj.location}/src/xkb_unicode.h"
+		}
 
--- 		defines 
--- 		{ 
--- 			"_GLFW_X11"
--- 		}
+		defines 
+		{ 
+			"_GLFW_X11"
+		}
 		
--- 	filter "system:macosx"
--- 		files
--- 		{
--- 			"%{prj.location}/src/cocoa_init.m",
--- 			"%{prj.location}/src/cocoa_joystick.m",
--- 			"%{prj.location}/src/cocoa_joystick.h",
--- 			"%{prj.location}/src/cocoa_monitor.m",
--- 			"%{prj.location}/src/cocoa_platform.h",
--- 			"%{prj.location}/src/cocoa_time.c",
--- 			"%{prj.location}/src/cocoa_window.m",
--- 			"%{prj.location}/src/nsgl_context.m",
--- 			"%{prj.location}/src/nsgl_context.h",
--- 			"%{prj.location}/src/posix_thread.c",
--- 			"%{prj.location}/src/posix_thread.h"
--- 		}
+	filter "system:macosx"
+		files
+		{
+			"%{prj.location}/src/cocoa_init.m",
+			"%{prj.location}/src/cocoa_joystick.m",
+			"%{prj.location}/src/cocoa_joystick.h",
+			"%{prj.location}/src/cocoa_monitor.m",
+			"%{prj.location}/src/cocoa_platform.h",
+			"%{prj.location}/src/cocoa_time.c",
+			"%{prj.location}/src/cocoa_window.m",
+			"%{prj.location}/src/nsgl_context.m",
+			"%{prj.location}/src/nsgl_context.h",
+			"%{prj.location}/src/posix_thread.c",
+			"%{prj.location}/src/posix_thread.h"
+		}
 
--- 		defines
--- 		{ 
--- 			"_GLFW_COCOA"
--- 		}
+		defines
+		{ 
+			"_GLFW_COCOA"
+		}
 
 project "ImGui"
 	kind "StaticLib"
@@ -278,8 +239,8 @@ project "ImGui"
 	staticruntime "on"
 	systemversion "latest"
 
-	targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir (outputbindir)
+	objdir (outputobjdir)
 
 	files
 	{
@@ -313,81 +274,3 @@ project "ImGui"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
-
-
-
-project "GLFW"
-		kind "StaticLib"
-		language "C"
-		location "vendor/glfw"
-		targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
-	
-		files
-		{
-			"%{prj.location}/include/GLFW/glfw3.h",
-			"%{prj.location}/include/GLFW/glfw3native.h",
-			"%{prj.location}/src/glfw_config.h",
-			"%{prj.location}/src/internal.h",
-			"%{prj.location}/src/context.c",
-			"%{prj.location}/src/init.c",
-			"%{prj.location}/src/input.c",
-			"%{prj.location}/src/monitor.c",
-			"%{prj.location}/src/vulkan.c",
-			"%{prj.location}/src/window.c"
-		}
-		filter "system:linux"
-			pic "On"
-	
-			systemversion "latest"
-			staticruntime "On"
-	
-			files
-			{
-				"%{prj.location}/src/x11_init.c",
-				"%{prj.location}/src/x11_monitor.c",
-				"%{prj.location}/src/x11_window.c",
-				"%{prj.location}/src/xkb_unicode.c",
-				"%{prj.location}/src/posix_time.c",
-				"%{prj.location}/src/posix_thread.c",
-				"%{prj.location}/src/glx_context.c",
-				"%{prj.location}/src/egl_context.c",
-				"%{prj.location}/src/osmesa_context.c",
-				"%{prj.location}/src/linux_joystick.c"
-			}
-	
-			defines
-			{
-				"_GLFW_X11"
-			}
-	
-		filter "system:windows"
-			systemversion "latest"
-			staticruntime "On"
-	
-			files
-			{
-				"%{prj.location}/src/win32_init.c",
-				"%{prj.location}/src/win32_joystick.c",
-				"%{prj.location}/src/win32_monitor.c",
-				"%{prj.location}/src/win32_time.c",
-				"%{prj.location}/src/win32_thread.c",
-				"%{prj.location}/src/win32_window.c",
-				"%{prj.location}/src/wgl_context.c",
-				"%{prj.location}/src/egl_context.c",
-				"%{prj.location}/src/osmesa_context.c"
-			}
-	
-			defines 
-			{ 
-				"_GLFW_WIN32",
-				"_CRT_SECURE_NO_WARNINGS"
-			}
-	
-		filter "configurations:Debug"
-			runtime "Debug"
-			symbols "on"
-	
-		filter "configurations:Release"
-			runtime "Release"
-			optimize "on"
